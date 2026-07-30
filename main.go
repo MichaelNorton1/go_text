@@ -14,6 +14,7 @@ func main() {
 	// Register handlers for root and API
 	http.HandleFunc("/", handler.Handler)
 	http.HandleFunc("/api/health", handler.Handler)
+	http.HandleFunc("/api/notify", handler.NotifyHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
