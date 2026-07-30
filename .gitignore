@@ -1,1 +1,4 @@
 .idea
+.env
+*.exe
+go_text
