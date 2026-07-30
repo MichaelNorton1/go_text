@@ -24,7 +24,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(update)
+	fmt.Printf("%+v\n", update)
 	/*
 		parse body
 		design how we want this to be used.
