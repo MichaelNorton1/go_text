@@ -24,7 +24,7 @@ func SendTelegramMessage(text string) error {
 	}
 
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", botToken)
-
+	fmt.Println(url, botToken, chatId)
 	payload := TelegramPayload{
 		ChatID: chatId,
 		Text:   text,
