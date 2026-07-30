@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-type TelegramPayload struct {
+type Payload struct {
 	Text   string `json:"text"`
 	ChatID string `json:"chat_id"`
 }
@@ -25,7 +25,7 @@ func SendTelegramMessage(text string) error {
 
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", botToken)
 	fmt.Println(url, botToken, chatId)
-	payload := TelegramPayload{
+	payload := Payload{
 		ChatID: chatId,
 		Text:   text,
 	}

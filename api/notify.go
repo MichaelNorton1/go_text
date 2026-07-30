@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+type TelegramMessage struct {
+}
+
 func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
@@ -14,7 +17,25 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := telegram.SendTelegramMessage("test")
+	var update TelegramMessage
+
+	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+	fmt.Println(update)
+	/*
+		parse body
+		design how we want this to be used.
+
+		#add <hobby>
+		#delete <hobby>
+		#results weekly total for all hobbies completed
+
+		simple text no # to add completed hobby to db
+	*/
+
+	err := telegram.SendTelegramMessage("received")
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
