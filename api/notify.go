@@ -8,6 +8,7 @@ import (
 )
 
 type TelegramMessage struct {
+	Text string `json:"text"`
 }
 
 func NotifyHandler(w http.ResponseWriter, r *http.Request) {
