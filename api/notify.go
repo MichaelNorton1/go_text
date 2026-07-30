@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"go_text/pkg/telegram"
 	"net/http"
 )
@@ -15,6 +16,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := telegram.SendTelegramMessage("test")
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
