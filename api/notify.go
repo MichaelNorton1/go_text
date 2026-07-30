@@ -7,8 +7,14 @@ import (
 	"net/http"
 )
 
-type TelegramMessage struct {
-	Text string `json:"text"`
+type TelegramUpdate struct {
+	UpdateID int `json:"update_id"`
+	Message  *struct {
+		Text string `json:"text"`
+		Chat struct {
+			ID int64 `json:"id"`
+		} `json:"chat"`
+	} `json:"message"`
 }
 
 func NotifyHandler(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +24,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var update TelegramMessage
+	var update TelegramUpdate
 
 	if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
