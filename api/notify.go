@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"go_text/pkg/parsers"
 	"go_text/pkg/telegram"
 	"net/http"
 )
@@ -30,7 +31,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	fmt.Printf("%+v\n", update)
+	fmt.Printf("%+v\n", r.Body)
 	/*
 		parse body
 		design how we want this to be used.
@@ -42,11 +43,39 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 		simple text no # to add completed hobby to db
 	*/
 
-	err := telegram.SendTelegramMessage("received")
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+	if update.Message != nil && update.Message.Text != "" {
+		msg := update.Message.Text
+		chatID := update.Message.Chat.ID
+		fmt.Printf("%+v\n", chatID)
+
+		parsedMsg := parsers.MessageParser(msg)
+
+		switch parsedMsg.Type {
+
+		case parsers.AddCommand:
+			err := telegram.SendTelegramMessage(parsedMsg.Value)
+			if err != nil {
+				return
+			}
+		case parsers.DeleteCommand:
+			err := telegram.SendTelegramMessage(parsedMsg.Value)
+			if err != nil {
+				return
+			}
+
+		case parsers.ResulstCommand:
+			err := telegram.SendTelegramMessage(parsedMsg.Value)
+			if err != nil {
+				return
+			}
+		case parsers.LoggedCommand:
+			err := telegram.SendTelegramMessage(parsedMsg.Value)
+			if err != nil {
+				return
+			}
+
+		}
+
 	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "message sent to telegram"})

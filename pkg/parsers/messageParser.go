@@ -12,10 +12,10 @@ type ParsedMessage struct {
 }
 
 const (
-	addCommand     CommandType = "add"
-	deleteCommand  CommandType = "delete"
-	resulstCommand CommandType = "results"
-	loggedCommand  CommandType = "log_entry"
+	AddCommand     CommandType = "add"
+	DeleteCommand  CommandType = "delete"
+	ResulstCommand CommandType = "results"
+	LoggedCommand  CommandType = "log_entry"
 )
 
 func MessageParser(text string) ParsedMessage {
@@ -34,12 +34,12 @@ func MessageParser(text string) ParsedMessage {
 
 		switch cmd {
 		case "#add":
-			return ParsedMessage{Type: addCommand, Value: payload}
+			return ParsedMessage{Type: AddCommand, Value: payload}
 		case "#delete":
-			return ParsedMessage{Type: deleteCommand, Value: payload}
+			return ParsedMessage{Type: DeleteCommand, Value: payload}
 		case "#results":
-			return ParsedMessage{Type: resulstCommand}
+			return ParsedMessage{Type: ResulstCommand}
 		}
 	}
-	return ParsedMessage{Type: loggedCommand, Value: trimmed}
+	return ParsedMessage{Type: LoggedCommand, Value: trimmed}
 }
