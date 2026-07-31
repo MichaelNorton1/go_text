@@ -76,7 +76,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 
 
 
-		case parsers.ResulstCommand: // Preserved your enum naming
+		case parsers.ResulstCommand: 
 			results, err := db.GetWeeklyResults(ctx, pool, chatID)
 			if err != nil {
 				log.Printf("[DB ERROR] GetWeeklyResults failed: %v", err)
