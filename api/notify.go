@@ -74,9 +74,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-
-
-		case parsers.ResulstCommand: 
+		case parsers.ResulstCommand:
 			results, err := db.GetWeeklyResults(ctx, pool, chatID)
 			if err != nil {
 				log.Printf("[DB ERROR] GetWeeklyResults failed: %v", err)
@@ -93,18 +91,26 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		case parsers.LoggedCommand:
-			err := db.LogHobbyCompletion(ctx, pool, chatID, parsedMsg.Value)
-			if err != nil {
-				log.Printf("[DB ERROR] LogHobbyCompletion failed: %v", err)
-				responseText = "❌ Failed to log entry."
+
+			inDb := db.CheckHobby(ctx, pool, parsedMsg.Value)
+			if inDb == false {
+				err := db.LogHobbyCompletion(ctx, pool, chatID, parsedMsg.Value)
+				if err != nil {
+					log.Printf("[DB ERROR] LogHobbyCompletion failed: %v", err)
+					responseText = "❌ Failed to log entry."
+				} else {
+					responseText = fmt.Sprintf("🎉 Logged '%s'!", parsedMsg.Value)
+				}
+
 			} else {
-				responseText = fmt.Sprintf("🎉 Logged '%s'!", parsedMsg.Value)
+				responseText = "Hobby has not been added to your tracked hobbies!"
+
 			}
 		}
 
 		// 5. Reply to the user on Telegram
 		if responseText != "" {
-			if err := telegram.SendTelegramMessage( responseText); err != nil {
+			if err := telegram.SendTelegramMessage(responseText); err != nil {
 				log.Printf("[TELEGRAM ERROR] Failed to send reply: %v", err)
 			}
 		}

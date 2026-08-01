@@ -13,7 +13,6 @@ type HobbyResult struct {
 	Count int
 }
 
-// AddHobby saves a new hobby for a chat_id. Returns true if inserted, false if it already existed.
 func AddHobby(ctx context.Context, pool *pgxpool.Pool, chatID int64, hobby string) (bool, error) {
 	hobbyName := strings.ToLower(strings.TrimSpace(hobby))
 	if hobbyName == "" {
@@ -31,13 +30,12 @@ func AddHobby(ctx context.Context, pool *pgxpool.Pool, chatID int64, hobby strin
 		return false, err
 	}
 
-	// RowsAffected() == 1 means created; 0 means ON CONFLICT was triggered
 	return cmdTag.RowsAffected() > 0, nil
 }
 
 // GetWeeklyResults counts all completions in the last 7 days for every active hobby.
 func GetWeeklyResults(ctx context.Context, pool *pgxpool.Pool, chatID int64) ([]HobbyResult, error) {
-	// LEFT JOIN ensures hobbies with 0 completions in the last 7 days still show up
+
 	query := `
 		SELECT h.name, COUNT(l.id) AS total
 		FROM hobbies h
@@ -78,4 +76,22 @@ func LogHobbyCompletion(ctx context.Context, pool *pgxpool.Pool, chatID int64, h
 	`
 	_, err := pool.Exec(ctx, query, chatID, hobbyName)
 	return err
+}
+
+func CheckHobby(ctx context.Context, pool *pgxpool.Pool, hobby string) bool {
+
+	hobbyName := strings.ToLower(strings.TrimSpace(hobby))
+	// see if hobby
+	query := `SELECT EXISTS( SELECT 1 
+	FROM hobbies
+	WHERE name = $1)`
+
+	inDb, err := pool.Exec(ctx, query, hobbyName)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Print(inDb)
+	return inDb.RowsAffected() > 0
+
 }
