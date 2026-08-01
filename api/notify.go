@@ -68,6 +68,7 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 					log.Printf("[DB ERROR] AddHobby failed: %v", err)
 					responseText = "❌ Failed to save hobby."
 				} else if created {
+					fmt.Printf("Hobby %s added successfully!", parsedMsg.Value)
 					responseText = fmt.Sprintf("✅ Added '%s' to your tracked hobbies!", parsedMsg.Value)
 				} else {
 					responseText = fmt.Sprintf("⚠️ '%s' is already in your hobbies list.", parsedMsg.Value)
@@ -108,7 +109,6 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// 5. Reply to the user on Telegram
 		if responseText != "" {
 			if err := telegram.SendTelegramMessage(responseText); err != nil {
 				log.Printf("[TELEGRAM ERROR] Failed to send reply: %v", err)
