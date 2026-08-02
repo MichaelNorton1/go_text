@@ -94,7 +94,8 @@ func NotifyHandler(w http.ResponseWriter, r *http.Request) {
 		case parsers.LoggedCommand:
 
 			inDb := db.CheckHobby(ctx, pool, parsedMsg.Value)
-			if inDb == false {
+			fmt.Print(inDb)
+			if inDb == true {
 				err := db.LogHobbyCompletion(ctx, pool, chatID, parsedMsg.Value)
 				if err != nil {
 					log.Printf("[DB ERROR] LogHobbyCompletion failed: %v", err)

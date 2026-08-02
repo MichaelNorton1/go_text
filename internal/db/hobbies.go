@@ -87,6 +87,7 @@ func CheckHobby(ctx context.Context, pool *pgxpool.Pool, hobby string) bool {
 	WHERE name = $1)`
 
 	inDb, err := pool.Exec(ctx, query, hobbyName)
+	fmt.Println(inDb)
 
 	if err != nil {
 		fmt.Println(err)
